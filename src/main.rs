@@ -32,7 +32,12 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Load assets
     let texture_creator = canvas.texture_creator();
-    let bardo_texture = texture_creator.load_texture("assets/bardo_2x.png")?;
+    // Store the textures in an array so that they can be referenced by index. This allows textures
+    // to be shared between entities without having to copy the texture all over the place.
+    let textures = [
+        texture_creator.load_texture("assets/bardo_2x.png")?
+    ];
+    let bardo_texture = 0;
 
     // Game state
     let mut player = Player::new(bardo_texture);
@@ -79,7 +84,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         canvas.set_draw_color(Color::RGB(128, 128, 128));
         canvas.clear();
 
-        player.render(&mut canvas)?;
+        player.render(&mut canvas, &textures)?;
 
         canvas.present();
 

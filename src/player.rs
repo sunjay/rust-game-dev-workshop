@@ -27,20 +27,20 @@ impl Direction {
     }
 }
 
-pub struct Player<'r> {
+pub struct Player {
     /// The position of the player in world coordinates
     position: Point,
     /// The texture containing the player spritesheet
-    texture: Texture<'r>,
+    texture: usize,
     /// The speed of the player's movement in pixels/second (0 = stopped)
     speed: i32,
     /// The direction of the player's movement
     direction: Direction,
 }
 
-impl<'r> Player<'r> {
+impl Player {
     /// Creates a new player
-    pub fn new(texture: Texture<'r>) -> Self {
+    pub fn new(texture: usize) -> Self {
         Self {
             position: Point::new(0, 0),
             texture,
@@ -75,7 +75,7 @@ impl<'r> Player<'r> {
     }
 
     /// Draw the player onto the given canvas
-    pub fn render(&self, canvas: &mut WindowCanvas) -> Result<(), String> {
+    pub fn render(&self, canvas: &mut WindowCanvas, textures: &[Texture]) -> Result<(), String> {
         let (width, height) = canvas.output_size()?;
 
         // The screen coordinate system has (0, 0) in its top-left corner whereas the
@@ -84,7 +84,7 @@ impl<'r> Player<'r> {
 
         // Copy the current frame onto the canvas
         canvas.copy(
-            &self.texture,
+            &textures[self.texture],
             Rect::new(0, 0, 52, 72),
             Rect::from_center(screen_pos, 52, 72)
         )?;
