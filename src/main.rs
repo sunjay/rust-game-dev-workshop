@@ -8,6 +8,7 @@ use sdl2::{
     event::Event,
     keyboard::Keycode,
     pixels::Color,
+    image::{self, LoadTexture, InitFlag},
 };
 
 use crate::player::Player;
@@ -16,6 +17,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Initialize the SDL2 library
     let sdl_context = sdl2::init()?;
     let video_subsystem = sdl_context.video()?;
+    // Leading "_" tells Rust that this is an unused variable that we don't care about. We have to
+    // have this variable because if we just called the function as is then the return value would
+    // be treated as a temporary value and then dropped right away.
+    let _image_context = image::init(InitFlag::PNG | InitFlag::JPG)?;
 
     // Create a window with the given title and dimensions
     let window = video_subsystem.window("Minimal Game", 800, 600)
@@ -25,8 +30,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Create a canvas that draws on the window
     let mut canvas = window.into_canvas().build()?;
 
+    // Load assets
+    let texture_creator = canvas.texture_creator();
+    let bardo_texture = texture_creator.load_texture("assets/bardo_2x.png")?;
+
     // Game state
-    let player = Player::default();
+    let player = Player::new(bardo_texture);
 
     let mut event_pump = sdl_context.event_pump()?;
     // A labelled loop can be used with `break` even from inside another loop
