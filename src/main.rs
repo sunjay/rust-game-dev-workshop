@@ -1,3 +1,5 @@
+mod player;
+
 use std::thread;
 use std::error::Error;
 use std::time::Duration;
@@ -7,6 +9,8 @@ use sdl2::{
     keyboard::Keycode,
     pixels::Color,
 };
+
+use crate::player::Player;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Initialize the SDL2 library
@@ -20,6 +24,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Create a canvas that draws on the window
     let mut canvas = window.into_canvas().build()?;
+
+    // Game state
+    let player = Player::default();
 
     let mut event_pump = sdl_context.event_pump()?;
     // A labelled loop can be used with `break` even from inside another loop
@@ -42,7 +49,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         // Draw the game onto the screen
         canvas.set_draw_color(Color::RGB(128, 128, 128));
         canvas.clear();
-        //TODO: Render here
+
+        player.render(&mut canvas)?;
+
         canvas.present();
 
         // Manage the timing of the game so that the loop doesn't go too quickly or too slowly.
