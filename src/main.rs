@@ -11,7 +11,7 @@ use sdl2::{
     image::{self, LoadTexture, InitFlag},
 };
 
-use crate::player::Player;
+use crate::player::{Direction, Player};
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Initialize the SDL2 library
@@ -35,8 +35,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let bardo_texture = texture_creator.load_texture("assets/bardo_2x.png")?;
 
     // Game state
-    let player = Player::new(bardo_texture);
+    let mut player = Player::new(bardo_texture);
 
+    let frame_duration = Duration::from_nanos(1_000_000_000 / 60);
     let mut event_pump = sdl_context.event_pump()?;
     // A labelled loop can be used with `break` even from inside another loop
     'running: loop {
@@ -48,12 +49,31 @@ fn main() -> Result<(), Box<dyn Error>> {
                 Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
                     break 'running
                 },
+                // Set the player direction and speed based on the arrow key that is pressed
+                Event::KeyDown { keycode: Some(Keycode::Up), repeat: false, .. } => {
+                    player.walk_in_direction(Direction::Up);
+                },
+                Event::KeyDown { keycode: Some(Keycode::Down), repeat: false, .. } => {
+                    player.walk_in_direction(Direction::Down);
+                },
+                Event::KeyDown { keycode: Some(Keycode::Left), repeat: false, .. } => {
+                    player.walk_in_direction(Direction::Left);
+                },
+                Event::KeyDown { keycode: Some(Keycode::Right), repeat: false, .. } => {
+                    player.walk_in_direction(Direction::Right);
+                },
+                Event::KeyUp { keycode: Some(Keycode::Left), repeat: false, .. } |
+                Event::KeyUp { keycode: Some(Keycode::Right), repeat: false, .. } |
+                Event::KeyUp { keycode: Some(Keycode::Up), repeat: false, .. } |
+                Event::KeyUp { keycode: Some(Keycode::Down), repeat: false, .. } => {
+                    player.stop();
+                },
                 _ => {}
             }
         }
 
         // Update game state
-        //TODO
+        player.update(frame_duration);
 
         // Draw the game onto the screen
         canvas.set_draw_color(Color::RGB(128, 128, 128));
@@ -73,7 +93,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         // For more information and some more robust approaches:
         // * http://web.archive.org/web/20190506122532/http://gafferongames.com/post/fix_your_timestep/
         // * https://www.gamasutra.com/blogs/BramStolk/20160408/269988/Fixing_your_time_step_the_easy_way_with_the_golden_48537_ms.php
-        thread::sleep(Duration::from_nanos(1_000_000_000 / 60))
+        thread::sleep(frame_duration);
     }
 
     Ok(())
