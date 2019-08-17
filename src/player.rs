@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::time::{Instant, Duration};
 
 use sdl2::{
     rect::{Point, Rect},
@@ -38,6 +38,8 @@ pub struct Player {
     direction: Direction,
     /// The current animation frame for the player's walking animation
     frame: i32,
+    /// The amount of time elapsed since the animation frame changed
+    frame_timer: Instant,
 }
 
 impl Player {
@@ -49,6 +51,7 @@ impl Player {
             speed: 0,
             direction: Direction::Down,
             frame: 0,
+            frame_timer: Instant::now(),
         }
     }
 
@@ -81,8 +84,12 @@ impl Player {
         self.position += self.direction.into_point() * distance;
 
         // Advance the walking animation (only want to do this when speed != 0)
-        // Note that this code assumes that ALL walking animations have 3 frames.
-        self.frame = (self.frame + 1) % 3;
+        if self.frame_timer.elapsed() >= Duration::from_millis(150) {
+            // Note that this code assumes that ALL walking animations have 3 frames.
+            self.frame = (self.frame + 1) % 3;
+            // Reset the frame timer
+            self.frame_timer = Instant::now();
+        }
     }
 
     /// Draw the player onto the given canvas
