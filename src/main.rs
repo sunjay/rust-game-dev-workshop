@@ -1,4 +1,6 @@
+mod direction;
 mod player;
+mod enemy;
 mod goal;
 
 use std::thread;
@@ -14,7 +16,9 @@ use sdl2::{
     image::{self, LoadTexture, InitFlag},
 };
 
-use crate::player::{Direction, Player};
+use crate::direction::Direction;
+use crate::player::Player;
+use crate::enemy::Enemy;
 use crate::goal::Goal;
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -40,16 +44,40 @@ fn main() -> Result<(), Box<dyn Error>> {
     // to be shared between entities without having to copy the texture all over the place.
     let textures = [
         texture_creator.load_texture("assets/bardo_2x.png")?,
+        texture_creator.load_texture("assets/reaper_blade_2x.png")?,
         texture_creator.load_texture("assets/pinktrees_2x.png")?,
     ];
     let bardo_texture = 0;
-    let pink_trees_texture = 1;
+    let reaper_texture = 1;
+    let pink_trees_texture = 2;
 
     // Game state
     let mut rng = thread_rng();
-    let mut player = Player::new(Point::new(rng.gen_range(-320, 321), 250), bardo_texture);
     let goal = Goal::new(Point::new(rng.gen_range(-300, 301), -200), pink_trees_texture);
+    let mut player = Player::new(Point::new(rng.gen_range(-320, 321), 250), bardo_texture);
 
+    // Generate enemies in random positions. To avoid overlap with anything else, an area of the
+    // world coordinate system is divided up into a 2D grid. Each enemy gets a random position
+    // within one of the cells of that grid.
+    let mut enemies = Vec::new();
+    for i in -2..2 {
+        for j in -2..0 {
+            let enemy_pos = Point::new(
+                i * 160 + rng.gen_range(1, 80),
+                j * 140 + 200 + rng.gen_range(-40, 40),
+            );
+            let enemy_dir = match rng.gen_range(0, 4) {
+                0 => Direction::Up,
+                1 => Direction::Down,
+                2 => Direction::Left,
+                3 => Direction::Right,
+                _ => unreachable!(),
+            };
+            enemies.push(Enemy::new(enemy_pos, enemy_dir, reaper_texture));
+        }
+    }
+
+    // Begin game loop
     let frame_duration = Duration::from_nanos(1_000_000_000 / 60);
     let mut event_pump = sdl_context.event_pump()?;
     // A labelled loop can be used with `break` even from inside another loop
@@ -87,6 +115,13 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         // Update game state
         player.update(frame_duration);
+        for enemy in &mut enemies {
+            enemy.update(frame_duration);
+        }
+        if enemies.iter().any(|enemy| player.collides_with(enemy.bounding_box())) {
+            println!("You lose!");
+            break;
+        }
         if player.collides_with(goal.bounding_box()) {
             println!("You win!");
             break;
@@ -97,6 +132,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         canvas.clear();
 
         player.render(&mut canvas, &textures)?;
+        for enemy in &enemies {
+            enemy.render(&mut canvas, &textures)?;
+        }
         goal.render(&mut canvas, &textures)?;
 
         canvas.present();

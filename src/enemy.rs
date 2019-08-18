@@ -7,58 +7,42 @@ use sdl2::{
 
 use crate::direction::Direction;
 
-pub struct Player {
-    /// The position of the player in world coordinates
+pub struct Enemy {
+    /// The position of the enemy in world coordinates
     position: Point,
-    /// The texture containing the player spritesheet
+    /// The texture containing the enemy spritesheet
     texture: usize,
-    /// The speed of the player's movement in pixels/second (0 = stopped)
+    /// The speed of the enemy's movement in pixels/second (0 = stopped)
     speed: i32,
-    /// The direction of the player's movement
+    /// The direction of the enemy's movement
     direction: Direction,
-    /// The current animation frame for the player's walking animation
+    /// The current animation frame for the enemy's walking animation
     frame: i32,
     /// The amount of time elapsed since the animation frame changed
     frame_timer: Instant,
 }
 
-impl Player {
-    /// Creates a new player
-    pub fn new(position: Point, texture: usize) -> Self {
+impl Enemy {
+    /// Creates a new enemy
+    pub fn new(position: Point, direction: Direction, texture: usize) -> Self {
         Self {
             position,
             texture,
             speed: 0,
-            direction: Direction::Down,
+            direction,
             frame: 0,
             frame_timer: Instant::now(),
         }
     }
 
-    /// Returns a rectangle that tightly encompasses the player in the world coordinate system
+    /// Returns a rectangle that tightly encompasses the enemy in the world coordinate system
     pub fn bounding_box(&self) -> Rect {
         // This is different from the size of the sprite because we only want the visible region,
         // not any surrounding transparent pixels
-        Rect::from_center(self.position, 32, 58)
+        Rect::from_center(self.position, 50, 58)
     }
 
-    /// Returns true if the given rectangle is touching the player's bounding box
-    pub fn collides_with(&self, rect: Rect) -> bool {
-        self.bounding_box().has_intersection(rect)
-    }
-
-    /// Set the player in motion in the given direction
-    pub fn walk_in_direction(&mut self, direction: Direction) {
-        self.speed = 200;
-        self.direction = direction;
-    }
-
-    /// Stop the player's movement but preserve their direction
-    pub fn stop(&mut self) {
-        self.speed = 0;
-    }
-
-    /// Update the player's state
+    /// Update the enemy's state
     pub fn update(&mut self, time_elapsed: Duration) {
         if self.speed == 0 {
             return;
@@ -84,9 +68,9 @@ impl Player {
         }
     }
 
-    /// Draw the player onto the given canvas
+    /// Draw the enemy onto the given canvas
     pub fn render(&self, canvas: &mut WindowCanvas, textures: &[Texture]) -> Result<(), String> {
-        let (sprite_width, sprite_height) = (52, 72);
+        let (sprite_width, sprite_height) = (64, 72);
         let sprite_x = self.frame * sprite_width;
         let spritesheet_row = match self.direction {
             Direction::Up => 3,
