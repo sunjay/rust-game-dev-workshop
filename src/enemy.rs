@@ -44,7 +44,7 @@ impl Enemy {
     }
 
     /// Update the enemy's state
-    pub fn update(&mut self, time_elapsed: Duration) {
+    pub fn update(&mut self, time_elapsed: Duration, world_bounds: Rect) {
         // The speed of the enemy's movement in pixels/second
         let speed = 200;
 
@@ -57,7 +57,13 @@ impl Enemy {
         let distance = speed * time_elapsed.as_micros() as i32 / 1_000_000;
 
         // Move in the current direction
+        let last_position = self.position;
         self.position += self.direction.into_point() * distance;
+        // Disallow enemies from leaving the window
+        if !world_bounds.contains_rect(self.bounding_box()) {
+            // Reset to the last position because that is definitely inside the world boundary
+            self.position = last_position;
+        }
 
         // Advance the walking animation
         if self.frame_timer.elapsed() >= Duration::from_millis(150) {

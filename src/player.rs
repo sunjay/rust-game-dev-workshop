@@ -59,7 +59,7 @@ impl Player {
     }
 
     /// Update the player's state
-    pub fn update(&mut self, time_elapsed: Duration) {
+    pub fn update(&mut self, time_elapsed: Duration, world_bounds: Rect) {
         if self.speed == 0 {
             return;
         }
@@ -73,7 +73,13 @@ impl Player {
         let distance = self.speed * time_elapsed.as_micros() as i32 / 1_000_000;
 
         // Move in the current direction
+        let last_position = self.position;
         self.position += self.direction.into_point() * distance;
+        // Disallow the player from leaving the window
+        if !world_bounds.contains_rect(self.bounding_box()) {
+            // Reset to the last position because that is definitely inside the world boundary
+            self.position = last_position;
+        }
 
         // Advance the walking animation (only want to do this when speed != 0)
         if self.frame_timer.elapsed() >= Duration::from_millis(150) {
