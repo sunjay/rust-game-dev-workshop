@@ -1,4 +1,5 @@
 mod player;
+mod goal;
 
 use std::thread;
 use std::error::Error;
@@ -8,10 +9,12 @@ use sdl2::{
     event::Event,
     keyboard::Keycode,
     pixels::Color,
+    rect::Point,
     image::{self, LoadTexture, InitFlag},
 };
 
 use crate::player::{Direction, Player};
+use crate::goal::Goal;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Initialize the SDL2 library
@@ -35,12 +38,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Store the textures in an array so that they can be referenced by index. This allows textures
     // to be shared between entities without having to copy the texture all over the place.
     let textures = [
-        texture_creator.load_texture("assets/bardo_2x.png")?
+        texture_creator.load_texture("assets/bardo_2x.png")?,
+        texture_creator.load_texture("assets/pinktrees_2x.png")?,
     ];
     let bardo_texture = 0;
+    let pink_trees_texture = 1;
 
     // Game state
-    let mut player = Player::new(bardo_texture);
+    let mut player = Player::new(Point::new(0, 0), bardo_texture);
+    let goal = Goal::new(Point::new(0, -200), pink_trees_texture);
 
     let frame_duration = Duration::from_nanos(1_000_000_000 / 60);
     let mut event_pump = sdl_context.event_pump()?;
@@ -85,6 +91,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         canvas.clear();
 
         player.render(&mut canvas, &textures)?;
+        goal.render(&mut canvas, &textures)?;
 
         canvas.present();
 

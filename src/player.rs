@@ -44,15 +44,20 @@ pub struct Player {
 
 impl Player {
     /// Creates a new player
-    pub fn new(texture: usize) -> Self {
+    pub fn new(position: Point, texture: usize) -> Self {
         Self {
-            position: Point::new(0, 0),
+            position,
             texture,
             speed: 0,
             direction: Direction::Down,
             frame: 0,
             frame_timer: Instant::now(),
         }
+    }
+
+    /// Returns a rectangle that tightly encompasses the player in the world coordinate system
+    pub fn rect(&self) -> Rect {
+        Rect::from_center(self.position, 52, 72)
     }
 
     /// Set the player in motion in the given direction
@@ -103,18 +108,17 @@ impl Player {
             Direction::Right => 2,
         };
         let sprite_y = spritesheet_row * sprite_height;
+        let sprite_rect = Rect::new(sprite_x, sprite_y, sprite_width as u32, sprite_height as u32);
 
         // The screen coordinate system has (0, 0) in its top-left corner whereas the
         // world coordinate system has (0, 0) in the center of the screen.
         let (width, height) = canvas.output_size()?;
         let screen_pos = self.position + Point::new((width/2) as i32, (height/2) as i32);
+        let rect = self.rect();
+        let screen_rect = Rect::from_center(screen_pos, rect.width(), rect.height());
 
         // Copy the current frame onto the canvas
-        canvas.copy(
-            &textures[self.texture],
-            Rect::new(sprite_x, sprite_y, sprite_width as u32, sprite_height as u32),
-            Rect::from_center(screen_pos, sprite_width as u32, sprite_height as u32),
-        )?;
+        canvas.copy(&textures[self.texture], sprite_rect, screen_rect)?;
 
         Ok(())
     }
