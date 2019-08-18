@@ -56,8 +56,10 @@ impl Player {
     }
 
     /// Returns a rectangle that tightly encompasses the player in the world coordinate system
-    pub fn rect(&self) -> Rect {
-        Rect::from_center(self.position, 52, 72)
+    pub fn bounding_box(&self) -> Rect {
+        // This is different from the size of the sprite because we only want the visible region,
+        // not any surrounding transparent pixels
+        Rect::from_center(self.position, 32, 58)
     }
 
     /// Set the player in motion in the given direction
@@ -114,8 +116,7 @@ impl Player {
         // world coordinate system has (0, 0) in the center of the screen.
         let (width, height) = canvas.output_size()?;
         let screen_pos = self.position + Point::new((width/2) as i32, (height/2) as i32);
-        let rect = self.rect();
-        let screen_rect = Rect::from_center(screen_pos, rect.width(), rect.height());
+        let screen_rect = Rect::from_center(screen_pos, sprite_width as u32, sprite_height as u32);
 
         // Copy the current frame onto the canvas
         canvas.copy(&textures[self.texture], sprite_rect, screen_rect)?;

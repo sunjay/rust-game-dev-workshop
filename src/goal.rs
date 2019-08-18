@@ -20,13 +20,15 @@ impl Goal {
     }
 
     /// Returns a rectangle that tightly encompasses the goal in the world coordinate system
-    pub fn rect(&self) -> Rect {
-        Rect::from_center(self.position, 128, 128)
+    pub fn bounding_box(&self) -> Rect {
+        // This is different from the size of the sprite because we only want the visible region,
+        // not any surrounding transparent pixels
+        Rect::from_center(self.position, 92, 116)
     }
 
     /// Returns true if the given rectangle is touching the goal
     pub fn touching(&self, rect: Rect) -> bool {
-        self.rect().has_intersection(rect)
+        self.bounding_box().has_intersection(rect)
     }
 
     /// Draw the goal onto the given canvas
@@ -39,8 +41,7 @@ impl Goal {
         // world coordinate system has (0, 0) in the center of the screen.
         let (width, height) = canvas.output_size()?;
         let screen_pos = self.position + Point::new((width/2) as i32, (height/2) as i32);
-        let rect = self.rect();
-        let screen_rect = Rect::from_center(screen_pos, rect.width(), rect.height());
+        let screen_rect = Rect::from_center(screen_pos, sprite_width, sprite_height);
 
         // Copy the sprite onto the canvas
         canvas.copy(&textures[self.texture], sprite_rect, screen_rect)?;
