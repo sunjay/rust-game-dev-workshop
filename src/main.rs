@@ -85,6 +85,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         // Update game state
         player.update(frame_duration);
+        if goal.touching(player.rect()) {
+            println!("You win!");
+            break;
+        }
 
         // Draw the game onto the screen
         canvas.set_draw_color(Color::RGB(128, 128, 128));
