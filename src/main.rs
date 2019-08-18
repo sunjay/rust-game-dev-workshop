@@ -1,4 +1,5 @@
 mod direction;
+mod world;
 mod player;
 mod enemy;
 mod goal;
@@ -7,19 +8,13 @@ use std::thread;
 use std::error::Error;
 use std::time::Duration;
 
-use rand::{Rng, thread_rng};
 use sdl2::{
-    event::Event,
-    keyboard::Keycode,
     pixels::Color,
-    rect::{Point, Rect},
+    rect::Rect,
     image::{self, LoadTexture, InitFlag},
 };
 
-use crate::direction::Direction;
-use crate::player::Player;
-use crate::enemy::Enemy;
-use crate::goal::Goal;
+use crate::world::{World, GameOver};
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Initialize the SDL2 library
@@ -40,42 +35,16 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Load assets
     let texture_creator = canvas.texture_creator();
-    // Store the textures in an array so that they can be referenced by index. This allows textures
+    // Store the textures in a Vec so that they can be referenced by index. This allows textures
     // to be shared between entities without having to copy the texture all over the place.
-    let textures = [
-        texture_creator.load_texture("assets/bardo_2x.png")?,
-        texture_creator.load_texture("assets/reaper_blade_2x.png")?,
-        texture_creator.load_texture("assets/pinktrees_2x.png")?,
-    ];
-    let bardo_texture = 0;
-    let reaper_texture = 1;
-    let pink_trees_texture = 2;
+    let mut textures = Vec::new();
+    let load_texture = |path| {
+        texture_creator.load_texture(path)?;
+        Ok(textures.len() - 1)
+    };
 
     // Game state
-    let mut rng = thread_rng();
-    let goal = Goal::new(Point::new(rng.gen_range(-300, 301), -200), pink_trees_texture);
-    let mut player = Player::new(Point::new(rng.gen_range(-320, 321), 250), bardo_texture);
-
-    // Generate enemies in random positions. To avoid overlap with anything else, an area of the
-    // world coordinate system is divided up into a 2D grid. Each enemy gets a random position
-    // within one of the cells of that grid.
-    let mut enemies = Vec::new();
-    for i in -1..2 {
-        for j in -2..0 {
-            let enemy_pos = Point::new(
-                i * 200 + rng.gen_range(-80, 80),
-                j * 140 + 200 + rng.gen_range(-40, 40),
-            );
-            let enemy_dir = match rng.gen_range(0, 4) {
-                0 => Direction::Up,
-                1 => Direction::Down,
-                2 => Direction::Left,
-                3 => Direction::Right,
-                _ => unreachable!(),
-            };
-            enemies.push(Enemy::new(enemy_pos, enemy_dir, reaper_texture));
-        }
-    }
+    let world = World::new(load_texture);
 
     // Begin game loop
     let frame_duration = Duration::from_nanos(1_000_000_000 / 60);
@@ -89,33 +58,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     'running: loop {
         // Handle all of the events available right now
         for event in event_pump.poll_iter() {
-            match event {
-                // Quit the game if the window is closed or if the escape key is pressed
-                Event::Quit {..} |
-                Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
-                    break 'running
-                },
-                // Set the player direction and speed based on the arrow key that is pressed
-                Event::KeyDown { keycode: Some(Keycode::Up), repeat: false, .. } => {
-                    player.walk_in_direction(Direction::Up);
-                },
-                Event::KeyDown { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    player.walk_in_direction(Direction::Down);
-                },
-                Event::KeyDown { keycode: Some(Keycode::Left), repeat: false, .. } => {
-                    player.walk_in_direction(Direction::Left);
-                },
-                Event::KeyDown { keycode: Some(Keycode::Right), repeat: false, .. } => {
-                    player.walk_in_direction(Direction::Right);
-                },
-                Event::KeyUp { keycode: Some(Keycode::Left), repeat: false, .. } |
-                Event::KeyUp { keycode: Some(Keycode::Right), repeat: false, .. } |
-                Event::KeyUp { keycode: Some(Keycode::Up), repeat: false, .. } |
-                Event::KeyUp { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    player.stop();
-                },
-                _ => {}
-            }
+            world.handle_event(&mut event_pump, &mut world.player);
         }
 
         // Update game state
