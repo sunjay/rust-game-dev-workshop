@@ -8,5 +8,5 @@ edition = "2018"
 
 [dependencies]
 sdl2 = { version = "0.32", features = ["image"] }
-specs = { version = "0.15", features = ["specs-derive"] }
+specs = { version = "0.15", features = ["specs-derive", "shred-derive"] }
 rand = "0.7"

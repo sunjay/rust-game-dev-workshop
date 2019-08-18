@@ -72,8 +72,11 @@ pub struct MovementAnimations {
 
 /// Marks an entity as the keyboard controlled player
 #[derive(Component, Default, Debug, Clone, Copy, PartialEq, Eq)]
-#[storage(NullStorage)]
-pub struct Player;
+#[storage(VecStorage)]
+pub struct Player {
+    /// The speed of the player when they are moving
+    pub movement_speed: i32,
+}
 
 /// Marks an entity as an enemy that will cause damage to the player
 #[derive(Component, Default, Debug, Clone, Copy, PartialEq, Eq)]

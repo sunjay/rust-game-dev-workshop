@@ -3,6 +3,8 @@ mod player;
 mod enemy;
 mod goal;
 mod components;
+mod resources;
+mod systems;
 
 use std::thread;
 use std::error::Error;
@@ -16,10 +18,11 @@ use sdl2::{
     rect::{Point, Rect},
     image::{self, LoadTexture, InitFlag},
 };
-use specs::{World, WorldExt, Builder};
+use specs::{World, WorldExt, Builder, DispatcherBuilder};
 
 use crate::direction::Direction;
-use crate::components::*;
+use crate::resources::{TimeDelta, KeyboardEvent};
+use crate::components::{BoundingBox, Velocity, Sprite, Player, Enemy, Goal};
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Initialize the SDL2 library
@@ -51,8 +54,16 @@ fn main() -> Result<(), Box<dyn Error>> {
     let reaper_texture = 1;
     let pink_trees_texture = 2;
 
+    // Declare the hierarchy of systems that will process entities and components
+    let dispatcher = DispatcherBuilder::new()
+        .with(systems::Keyboard, "Keyboard", &[])
+        .build();
+
     // Game state
     let mut world = World::new();
+    // Setup the component storages based on the data used by the systems
+    dispatcher.setup(&mut world);
+
     let mut rng = thread_rng();
 
     world.create_entity()
@@ -65,7 +76,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .build();
 
     world.create_entity()
-        .with(Player)
+        .with(Player {movement_speed: 200})
         .with(BoundingBox(Rect::from_center((rng.gen_range(-320, 321), 250), 32, 58)))
         .with(Velocity {speed: 0, direction: Direction::Down})
         .with(Sprite {
@@ -103,6 +114,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
+    // Add resources (all resources must be added before they can be updated)
+    world.insert(TimeDelta::default());
+
     // Begin game loop
     let frame_duration = Duration::from_nanos(1_000_000_000 / 60);
     // The boundary of the window in world coordinates
@@ -116,6 +130,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         // HANDLE EVENTS
 
         // Handle all of the events available right now
+        let mut keyboard_event = None;
         for event in event_pump.poll_iter() {
             match event {
                 // Quit the game if the window is closed or if the escape key is pressed
@@ -125,22 +140,22 @@ fn main() -> Result<(), Box<dyn Error>> {
                 },
                 // Set the player direction and speed based on the arrow key that is pressed
                 Event::KeyDown { keycode: Some(Keycode::Up), repeat: false, .. } => {
-                    player.walk_in_direction(Direction::Up);
+                    keyboard_event = Some(KeyboardEvent::MoveInDirection(Direction::Up));
                 },
                 Event::KeyDown { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    player.walk_in_direction(Direction::Down);
+                    keyboard_event = Some(KeyboardEvent::MoveInDirection(Direction::Down));
                 },
                 Event::KeyDown { keycode: Some(Keycode::Left), repeat: false, .. } => {
-                    player.walk_in_direction(Direction::Left);
+                    keyboard_event = Some(KeyboardEvent::MoveInDirection(Direction::Left));
                 },
                 Event::KeyDown { keycode: Some(Keycode::Right), repeat: false, .. } => {
-                    player.walk_in_direction(Direction::Right);
+                    keyboard_event = Some(KeyboardEvent::MoveInDirection(Direction::Right));
                 },
                 Event::KeyUp { keycode: Some(Keycode::Left), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Right), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Up), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    player.stop();
+                    keyboard_event = Some(KeyboardEvent::Stop);
                 },
                 _ => {}
             }
@@ -148,7 +163,15 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         // UPDATE
 
+        // Store the time elapsed since the last frame in a resource so that all systems may have
+        // access to it.
+        *world.write_resource() = TimeDelta(frame_duration);
+
         // Update game state
+        dispatcher.dispatch(&world);
+        // Apply any lazy updates that occurred during dispatch
+        world.maintain();
+
         player.update(frame_duration, world_bounds);
         for enemy in &mut enemies {
             enemy.update(frame_duration, world_bounds);
