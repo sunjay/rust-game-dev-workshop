@@ -87,6 +87,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut event_pump = sdl_context.event_pump()?;
     // A labelled loop can be used with `break` even from inside another loop
     'running: loop {
+        // HANDLE EVENTS
+
         // Handle all of the events available right now
         for event in event_pump.poll_iter() {
             match event {
@@ -118,19 +120,25 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         }
 
+        // UPDATE
+
         // Update game state
         player.update(frame_duration, world_bounds);
         for enemy in &mut enemies {
             enemy.update(frame_duration, world_bounds);
         }
+        // If the player collides with any enemies, quit the game immediately
         if enemies.iter().any(|enemy| player.collides_with(enemy.bounding_box())) {
             println!("You lose!");
             break;
         }
+        // If the player reaches the goal, they win
         if player.collides_with(goal.bounding_box()) {
             println!("You win!");
             break;
         }
+
+        // RENDER
 
         // Draw the game onto the screen
         canvas.set_draw_color(Color::RGB(128, 128, 128));
@@ -143,6 +151,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         goal.render(&mut canvas, &textures)?;
 
         canvas.present();
+
+        // LIMIT FRAMERATE
 
         // Manage the timing of the game so that the loop doesn't go too quickly or too slowly.
         //
