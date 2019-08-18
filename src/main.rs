@@ -16,11 +16,10 @@ use sdl2::{
     rect::{Point, Rect},
     image::{self, LoadTexture, InitFlag},
 };
+use specs::{World, WorldExt, Builder};
 
 use crate::direction::Direction;
-use crate::player::Player;
-use crate::enemy::Enemy;
-use crate::goal::Goal;
+use crate::components::*;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Initialize the SDL2 library
@@ -53,14 +52,31 @@ fn main() -> Result<(), Box<dyn Error>> {
     let pink_trees_texture = 2;
 
     // Game state
+    let mut world = World::new();
     let mut rng = thread_rng();
-    let goal = Goal::new(Point::new(rng.gen_range(-300, 301), -200), pink_trees_texture);
-    let mut player = Player::new(Point::new(rng.gen_range(-320, 321), 250), bardo_texture);
+
+    world.create_entity()
+        .with(Goal)
+        .with(BoundingBox(Rect::from_center((rng.gen_range(-300, 301), -200), 92, 116)))
+        .with(Sprite {
+            texture_id: pink_trees_texture,
+            region: Rect::new(0, 0, 128, 128),
+        })
+        .build();
+
+    world.create_entity()
+        .with(Player)
+        .with(BoundingBox(Rect::from_center((rng.gen_range(-320, 321), 250), 32, 58)))
+        .with(Velocity {speed: 0, direction: Direction::Down})
+        .with(Sprite {
+            texture_id: bardo_texture,
+            region: Rect::new(0, 0, 52, 72),
+        })
+        .build();
 
     // Generate enemies in random positions. To avoid overlap with anything else, an area of the
     // world coordinate system is divided up into a 2D grid. Each enemy gets a random position
     // within one of the cells of that grid.
-    let mut enemies = Vec::new();
     for i in -1..2 {
         for j in -2..0 {
             let enemy_pos = Point::new(
@@ -74,7 +90,16 @@ fn main() -> Result<(), Box<dyn Error>> {
                 3 => Direction::Right,
                 _ => unreachable!(),
             };
-            enemies.push(Enemy::new(enemy_pos, enemy_dir, reaper_texture));
+
+            world.create_entity()
+                .with(Enemy)
+                .with(BoundingBox(Rect::from_center(enemy_pos, 50, 58)))
+                .with(Velocity {speed: 200, direction: enemy_dir})
+                .with(Sprite {
+                    texture_id: reaper_texture,
+                    region: Rect::new(0, 0, 52, 72),
+                })
+                .build();
         }
     }
 
