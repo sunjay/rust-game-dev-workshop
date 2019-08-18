@@ -5,6 +5,8 @@ keyboard-controlled player, some enemies/obstacles, and a goal to reach. It's
 hard to define what exactly makes a game "complete", but these three things
 together do at least make something you can play.
 
+![Minimal Rust Game](preview.gif)
+
 ## Acknowledgements
 
 The sources of the assets used in this game are linked below:
