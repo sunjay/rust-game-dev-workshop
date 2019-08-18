@@ -12,7 +12,7 @@ use sdl2::{
     event::Event,
     keyboard::Keycode,
     pixels::Color,
-    rect::Point,
+    rect::{Point, Rect},
     image::{self, LoadTexture, InitFlag},
 };
 
@@ -79,6 +79,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Begin game loop
     let frame_duration = Duration::from_nanos(1_000_000_000 / 60);
+    // The boundary of the window in world coordinates
+    let world_bounds = {
+        let (width, height) = canvas.output_size()?;
+        Rect::from_center((0, 0), width, height)
+    };
     let mut event_pump = sdl_context.event_pump()?;
     // A labelled loop can be used with `break` even from inside another loop
     'running: loop {
@@ -114,9 +119,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
 
         // Update game state
-        player.update(frame_duration);
+        player.update(frame_duration, world_bounds);
         for enemy in &mut enemies {
-            enemy.update(frame_duration);
+            enemy.update(frame_duration, world_bounds);
         }
         if enemies.iter().any(|enemy| player.collides_with(enemy.bounding_box())) {
             println!("You lose!");
