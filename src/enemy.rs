@@ -4,6 +4,7 @@ use sdl2::{
     rect::{Point, Rect},
     render::{Texture, WindowCanvas},
 };
+use rand::{Rng, thread_rng};
 
 use crate::direction::Direction;
 
@@ -12,10 +13,10 @@ pub struct Enemy {
     position: Point,
     /// The texture containing the enemy spritesheet
     texture: usize,
-    /// The speed of the enemy's movement in pixels/second (0 = stopped)
-    speed: i32,
     /// The direction of the enemy's movement
     direction: Direction,
+    /// The amount of time elapsed since the direction was changed
+    direction_timer: Instant,
     /// The current animation frame for the enemy's walking animation
     frame: i32,
     /// The amount of time elapsed since the animation frame changed
@@ -28,8 +29,8 @@ impl Enemy {
         Self {
             position,
             texture,
-            speed: 0,
             direction,
+            direction_timer: Instant::now(),
             frame: 0,
             frame_timer: Instant::now(),
         }
@@ -44,9 +45,8 @@ impl Enemy {
 
     /// Update the enemy's state
     pub fn update(&mut self, time_elapsed: Duration) {
-        if self.speed == 0 {
-            return;
-        }
+        // The speed of the enemy's movement in pixels/second
+        let speed = 200;
 
         // Compute the distance (in pixels) traversed during the time elapsed.
         // Notes:
@@ -54,17 +54,36 @@ impl Enemy {
         // * We do the division at the end so rounding due to integer division occurs last.
         // * The conversion to i32 is only safe because we assume that the number of microseconds
         //   in time_elapsed fits within the range of i32.
-        let distance = self.speed * time_elapsed.as_micros() as i32 / 1_000_000;
+        let distance = speed * time_elapsed.as_micros() as i32 / 1_000_000;
 
         // Move in the current direction
         self.position += self.direction.into_point() * distance;
 
-        // Advance the walking animation (only want to do this when speed != 0)
+        // Advance the walking animation
         if self.frame_timer.elapsed() >= Duration::from_millis(150) {
             // Note that this code assumes that ALL walking animations have 3 frames.
             self.frame = (self.frame + 1) % 3;
             // Reset the frame timer
             self.frame_timer = Instant::now();
+        }
+
+        // Avoid changing the direction too rapidly by only doing it every so often
+        if self.direction_timer.elapsed() >= Duration::from_millis(200) {
+            // Generate a new random direction
+            let mut rng = thread_rng();
+            self.direction = match rng.gen_range(1, 101) {
+                // 60% probability of staying in the same direction
+                1..=60 => self.direction,
+                // 10% chance of changing to some random direction (one of which could be the same)
+                61..=70 => Direction::Up,
+                71..=80 => Direction::Down,
+                81..=90 => Direction::Left,
+                91..=100 => Direction::Right,
+                _ => unreachable!(),
+            };
+
+            // Reset the direction timer
+            self.direction_timer = Instant::now();
         }
     }
 
