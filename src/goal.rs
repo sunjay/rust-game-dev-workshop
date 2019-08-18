@@ -26,11 +26,6 @@ impl Goal {
         Rect::from_center(self.position, 92, 116)
     }
 
-    /// Returns true if the given rectangle is touching the goal
-    pub fn touching(&self, rect: Rect) -> bool {
-        self.bounding_box().has_intersection(rect)
-    }
-
     /// Draw the goal onto the given canvas
     pub fn render(&self, canvas: &mut WindowCanvas, textures: &[Texture]) -> Result<(), String> {
         let (sprite_x, sprite_y) = (0, 0);

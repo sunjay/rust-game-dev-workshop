@@ -62,6 +62,11 @@ impl Player {
         Rect::from_center(self.position, 32, 58)
     }
 
+    /// Returns true if the given rectangle is touching the player's bounding box
+    pub fn collides_with(&self, rect: Rect) -> bool {
+        self.bounding_box().has_intersection(rect)
+    }
+
     /// Set the player in motion in the given direction
     pub fn walk_in_direction(&mut self, direction: Direction) {
         self.speed = 200;
