@@ -60,10 +60,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     // world coordinate system is divided up into a 2D grid. Each enemy gets a random position
     // within one of the cells of that grid.
     let mut enemies = Vec::new();
-    for i in -2..2 {
+    for i in -1..2 {
         for j in -2..0 {
             let enemy_pos = Point::new(
-                i * 160 + rng.gen_range(1, 80),
+                i * 200 + rng.gen_range(-80, 80),
                 j * 140 + 200 + rng.gen_range(-40, 40),
             );
             let enemy_dir = match rng.gen_range(0, 4) {
