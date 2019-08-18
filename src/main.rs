@@ -2,6 +2,7 @@ mod direction;
 mod player;
 mod enemy;
 mod goal;
+mod components;
 
 use std::thread;
 use std::error::Error;
