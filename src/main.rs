@@ -87,7 +87,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         // Update game state
         player.update(frame_duration);
-        if goal.touching(player.bounding_box()) {
+        if player.collides_with(goal.bounding_box()) {
             println!("You win!");
             break;
         }
