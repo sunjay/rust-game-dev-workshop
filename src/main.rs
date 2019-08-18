@@ -5,6 +5,7 @@ use std::thread;
 use std::error::Error;
 use std::time::Duration;
 
+use rand::{Rng, thread_rng};
 use sdl2::{
     event::Event,
     keyboard::Keycode,
@@ -45,8 +46,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let pink_trees_texture = 1;
 
     // Game state
-    let mut player = Player::new(Point::new(0, 0), bardo_texture);
-    let goal = Goal::new(Point::new(0, -200), pink_trees_texture);
+    let mut rng = thread_rng();
+    let mut player = Player::new(Point::new(rng.gen_range(-320, 321), 250), bardo_texture);
+    let goal = Goal::new(Point::new(rng.gen_range(-300, 301), -200), pink_trees_texture);
 
     let frame_duration = Duration::from_nanos(1_000_000_000 / 60);
     let mut event_pump = sdl_context.event_pump()?;
