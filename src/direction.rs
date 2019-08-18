@@ -1,6 +1,6 @@
 use sdl2::rect::Point;
 
-/// The direction of motion
+/// Represents a direction of motion
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Direction {
     Up,
