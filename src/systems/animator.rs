@@ -2,7 +2,6 @@ use std::time::Instant;
 
 use specs::{System, SystemData, Entities, ReadStorage, WriteStorage, Join, World, prelude::ResourceId};
 
-use crate::direction::Direction;
 use crate::components::{Velocity, Animation, Sprite, MovementAnimations};
 
 pub struct Animator;
@@ -42,12 +41,7 @@ impl<'a> System<'a> for Animator {
                 continue;
             }
 
-            let dir_anim = match direction {
-                Direction::Up => &move_animations.walking_up,
-                Direction::Down => &move_animations.walking_down,
-                Direction::Left => &move_animations.walking_left,
-                Direction::Right => &move_animations.walking_right,
-            };
+            let dir_anim = move_animations.animation_for(direction);
 
             // Testing for equality of two Vecs would normally be quite expensive, but luckily
             // since we are using Arc<Vec<_>>, this will check if the pointers are equal first

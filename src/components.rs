@@ -70,6 +70,56 @@ pub struct MovementAnimations {
     pub walking_right: Animation,
 }
 
+impl MovementAnimations {
+    /// Generates a set of movement animations based on the standard convention for spritesheets
+    /// in this project. Expects 4 rows of `frames_length` frames each with the animations ordered:
+    /// walking down, walking left, walking right, walking up.
+    ///
+    /// The `top_left_frame` parameter provides the offset in the spritesheet as well as the
+    /// width and height (in pixels) of each frame. The `step_delay` is the duration of each frame.
+    pub fn standard_walking_animations(
+        texture_id: usize,
+        top_left_frame: Rect,
+        frames_length: usize,
+        step_delay: Duration,
+    ) -> Self {
+        let animation = |row| Animation {
+            frames: Arc::new((0..frames_length as i32).map(|frame| Frame {
+                sprite: Sprite {
+                    texture_id,
+                    region: {
+                        let mut frame_region = top_left_frame.clone();
+                        frame_region.offset(
+                            frame * top_left_frame.width() as i32,
+                            row * top_left_frame.height() as i32,
+                        );
+                        frame_region
+                    },
+                },
+                duration: step_delay,
+            }).collect()),
+            current_frame: 0,
+            frame_timer: Instant::now(),
+        };
+
+        Self {
+            walking_up: animation(3),
+            walking_down: animation(0),
+            walking_left: animation(1),
+            walking_right: animation(2),
+        }
+    }
+
+    pub fn animation_for(&self, direction: Direction) -> &Animation {
+        match direction {
+            Direction::Up => &self.walking_up,
+            Direction::Down => &self.walking_down,
+            Direction::Left => &self.walking_left,
+            Direction::Right => &self.walking_right,
+        }
+    }
+}
+
 /// Marks an entity as the keyboard controlled player
 #[derive(Component, Debug, Clone)]
 #[storage(VecStorage)]
