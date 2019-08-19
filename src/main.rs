@@ -5,6 +5,7 @@ mod goal;
 mod components;
 mod resources;
 mod systems;
+mod renderer;
 
 use std::thread;
 use std::error::Error;
@@ -23,6 +24,7 @@ use specs::{World, WorldExt, Builder, DispatcherBuilder};
 use crate::direction::Direction;
 use crate::resources::{TimeDelta, KeyboardEvent, GameStatus};
 use crate::components::{BoundingBox, Velocity, Sprite, Player, Enemy, Goal};
+use crate::renderer::RendererData;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Initialize the SDL2 library
@@ -202,11 +204,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         canvas.set_draw_color(Color::RGB(128, 128, 128));
         canvas.clear();
 
-        player.render(&mut canvas, &textures)?;
-        for enemy in &enemies {
-            enemy.render(&mut canvas, &textures)?;
-        }
-        goal.render(&mut canvas, &textures)?;
+        let renderer_data: RendererData = world.system_data();
+        renderer_data.render(&mut canvas, &textures)?;
 
         canvas.present();
 
