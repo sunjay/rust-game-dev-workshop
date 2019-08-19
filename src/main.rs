@@ -40,6 +40,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Create a canvas that draws on the window
     let mut canvas = window.into_canvas().build()?;
+    // The boundary of the window in world coordinates
+    let world_bounds = {
+        let (width, height) = canvas.output_size()?;
+        Rect::from_center((0, 0), width, height)
+    };
 
     // Load assets
     let texture_creator = canvas.texture_creator();
@@ -57,6 +62,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Declare the hierarchy of systems that will process entities and components
     let dispatcher = DispatcherBuilder::new()
         .with(systems::Keyboard, "Keyboard", &[])
+        .with(systems::Movement {world_bounds}, "Movement", &["Keyboard"])
         .build();
 
     // Game state
@@ -119,11 +125,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Begin game loop
     let frame_duration = Duration::from_nanos(1_000_000_000 / 60);
-    // The boundary of the window in world coordinates
-    let world_bounds = {
-        let (width, height) = canvas.output_size()?;
-        Rect::from_center((0, 0), width, height)
-    };
     let mut event_pump = sdl_context.event_pump()?;
     // A labelled loop can be used with `break` even from inside another loop
     'running: loop {
