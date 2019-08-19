@@ -63,6 +63,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let dispatcher = DispatcherBuilder::new()
         .with(systems::Keyboard, "Keyboard", &[])
         .with(systems::Movement {world_bounds}, "Movement", &["Keyboard"])
+        .with(systems::Animator, "Animator", &["Keyboard"])
         .build();
 
     // Game state

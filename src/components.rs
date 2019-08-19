@@ -23,7 +23,7 @@ pub struct Velocity {
 
 /// The sprite to render for a given entity. The entity must also have a
 /// `Position` component in order for it to be drawn on the screen.
-#[derive(Component, Debug, Clone)]
+#[derive(Component, Debug, Clone, PartialEq, Eq)]
 #[storage(VecStorage)]
 pub struct Sprite {
     /// The texture containing the spritesheet to copy sprites from
@@ -46,7 +46,7 @@ pub struct Animation {
     pub frame_timer: Instant,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Frame {
     /// The sprite to render for this frame
     pub sprite: Sprite,
