@@ -165,7 +165,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         // UPDATE
 
         // Store the time elapsed since the last frame in a resource so that all systems may have
-        // access to it.
+        // access to it. This is mostly just done for illustration purposes since we technically
+        // do not need to repeatedly set the value over and over again if it is constant.
         *world.write_resource() = TimeDelta(frame_duration);
 
         // Update game state
