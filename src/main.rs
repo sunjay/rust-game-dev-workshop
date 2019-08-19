@@ -1,7 +1,4 @@
 mod direction;
-mod player;
-mod enemy;
-mod goal;
 mod components;
 mod resources;
 mod systems;
@@ -62,7 +59,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let pink_trees_texture = 2;
 
     // Declare the hierarchy of systems that will process entities and components
-    let dispatcher = DispatcherBuilder::new()
+    let mut dispatcher = DispatcherBuilder::new()
         .with(systems::Keyboard, "Keyboard", &[])
         .with(systems::AI, "AI", &[])
         .with(systems::Movement {world_bounds}, "Movement", &["Keyboard", "AI"])

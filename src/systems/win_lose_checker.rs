@@ -19,7 +19,7 @@ impl<'a> System<'a> for WinLoseChecker {
     type SystemData = WinLoseCheckerData<'a>;
 
     fn run(&mut self, data: Self::SystemData) {
-        let WinLoseCheckerData {players, enemies, goals, bounding_boxes, game_status} = data;
+        let WinLoseCheckerData {players, enemies, goals, bounding_boxes, mut game_status} = data;
 
         for (_, BoundingBox(player_bounds)) in (&players, &bounding_boxes).join() {
             for (_, &BoundingBox(enemy_bounds)) in (&enemies, &bounding_boxes).join() {

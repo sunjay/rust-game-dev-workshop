@@ -17,20 +17,20 @@ impl<'a> System<'a> for Keyboard {
     type SystemData = KeyboardData<'a>;
 
     fn run(&mut self, data: Self::SystemData) {
-        let KeyboardData {players, velocities, keyboard_event} = data;
+        let KeyboardData {players, mut velocities, keyboard_event} = data;
 
         use KeyboardEvent::*;
         match *keyboard_event {
             // Instruct player to move in the given direction
             Some(MoveInDirection(direction)) => {
-                for (&Player {movement_speed}, velocity) in (&players, &velocities).join() {
+                for (&Player {movement_speed}, velocity) in (&players, &mut velocities).join() {
                     velocity.speed = movement_speed;
                     velocity.direction = direction;
                 }
             },
             // Instruct player to stop (but preserve the direction)
             Some(Stop) => {
-                for (_, velocity) in (&players, &velocities).join() {
+                for (_, velocity) in (&players, &mut velocities).join() {
                     velocity.speed = 0;
                 }
             },

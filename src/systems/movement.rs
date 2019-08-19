@@ -5,7 +5,7 @@ use crate::resources::TimeDelta;
 use crate::components::{BoundingBox, Velocity};
 
 pub struct Movement {
-    world_bounds: Rect,
+    pub world_bounds: Rect,
 }
 
 /// Data from the world required by the system
@@ -20,7 +20,7 @@ impl<'a> System<'a> for Movement {
     type SystemData = MovementData<'a>;
 
     fn run(&mut self, data: Self::SystemData) {
-        let MovementData {velocities, bounding_boxes, time_delta} = data;
+        let MovementData {velocities, mut bounding_boxes, time_delta} = data;
         let TimeDelta(time_elapsed) = *time_delta;
 
         for (&Velocity {speed, direction}, BoundingBox(bounds)) in (&velocities, &mut bounding_boxes).join() {

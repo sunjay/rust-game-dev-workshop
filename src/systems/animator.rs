@@ -25,8 +25,8 @@ impl<'a> System<'a> for Animator {
             entities,
             velocities,
             movement_animations,
-            animations,
-            sprites,
+            mut animations,
+            mut sprites,
         } = data;
 
         // Update the Animation component of every entity with Velocity and MovementAnimations
@@ -60,7 +60,8 @@ impl<'a> System<'a> for Animator {
             };
 
             if needs_update {
-                animations.insert(entity, dir_anim.clone());
+                animations.insert(entity, dir_anim.clone())
+                    .expect("failed to update animation");
             }
         }
 

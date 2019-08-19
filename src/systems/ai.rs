@@ -19,7 +19,7 @@ impl<'a> System<'a> for AI {
     type SystemData = AIData<'a>;
 
     fn run(&mut self, data: Self::SystemData) {
-        let AIData {enemies, velocities} = data;
+        let AIData {mut enemies, mut velocities} = data;
 
         let mut rng = thread_rng();
         for (enemy, velocity) in (&mut enemies, &mut velocities).join() {
