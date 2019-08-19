@@ -161,6 +161,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                 _ => {}
             }
         }
+        // Inform the systems of the keyboard event
+        world.insert(keyboard_event);
 
         // UPDATE
 
