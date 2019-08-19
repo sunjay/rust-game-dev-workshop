@@ -8,7 +8,7 @@ mod systems;
 
 use std::thread;
 use std::error::Error;
-use std::time::Duration;
+use std::time::{Instant, Duration};
 
 use rand::{Rng, thread_rng};
 use sdl2::{
@@ -62,8 +62,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Declare the hierarchy of systems that will process entities and components
     let dispatcher = DispatcherBuilder::new()
         .with(systems::Keyboard, "Keyboard", &[])
-        .with(systems::Movement {world_bounds}, "Movement", &["Keyboard"])
-        .with(systems::Animator, "Animator", &["Keyboard"])
+        .with(systems::AI, "AI", &[])
+        .with(systems::Movement {world_bounds}, "Movement", &["Keyboard", "AI"])
+        .with(systems::Animator, "Animator", &["Keyboard", "AI"])
         .build();
 
     // Game state
@@ -110,7 +111,10 @@ fn main() -> Result<(), Box<dyn Error>> {
             };
 
             world.create_entity()
-                .with(Enemy)
+                .with(Enemy {
+                    direction_timer: Instant::now(),
+                    direction_change_delay: Duration::from_millis(200),
+                })
                 .with(BoundingBox(Rect::from_center(enemy_pos, 50, 58)))
                 .with(Velocity {speed: 200, direction: enemy_dir})
                 .with(Sprite {

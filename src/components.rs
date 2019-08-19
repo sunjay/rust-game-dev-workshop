@@ -71,7 +71,7 @@ pub struct MovementAnimations {
 }
 
 /// Marks an entity as the keyboard controlled player
-#[derive(Component, Default, Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Component, Debug, Clone)]
 #[storage(VecStorage)]
 pub struct Player {
     /// The speed of the player when they are moving
@@ -79,9 +79,14 @@ pub struct Player {
 }
 
 /// Marks an entity as an enemy that will cause damage to the player
-#[derive(Component, Default, Debug, Clone, Copy, PartialEq, Eq)]
-#[storage(NullStorage)]
-pub struct Enemy;
+#[derive(Component, Debug, Clone)]
+#[storage(VecStorage)]
+pub struct Enemy {
+    /// The amount of time elapsed since the direction was changed
+    pub direction_timer: Instant,
+    /// The amount of time to wait between direction changes
+    pub direction_change_delay: Duration,
+}
 
 /// Marks an entity as the goal. If the player reaches this, they win the game.
 #[derive(Component, Default, Debug, Clone, Copy, PartialEq, Eq)]
