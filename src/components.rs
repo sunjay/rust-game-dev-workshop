@@ -7,6 +7,8 @@ use specs::{Component, VecStorage, NullStorage};
 use crate::direction::Direction;
 
 /// The position and dimensions of an entity in world coordinates
+///
+/// Assumes that the entity is positioned at the center of the bounding box.
 #[derive(Component, Debug, Clone)]
 #[storage(VecStorage)]
 pub struct BoundingBox(pub Rect);
