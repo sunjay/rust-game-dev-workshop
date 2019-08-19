@@ -13,3 +13,11 @@ pub enum KeyboardEvent {
     /// Stop moving in the current direction
     Stop,
 }
+
+/// The current status of the game
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GameStatus {
+    Running,
+    Win,
+    Lose,
+}

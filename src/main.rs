@@ -21,7 +21,7 @@ use sdl2::{
 use specs::{World, WorldExt, Builder, DispatcherBuilder};
 
 use crate::direction::Direction;
-use crate::resources::{TimeDelta, KeyboardEvent};
+use crate::resources::{TimeDelta, KeyboardEvent, GameStatus};
 use crate::components::{BoundingBox, Velocity, Sprite, Player, Enemy, Goal};
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -64,6 +64,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .with(systems::Keyboard, "Keyboard", &[])
         .with(systems::AI, "AI", &[])
         .with(systems::Movement {world_bounds}, "Movement", &["Keyboard", "AI"])
+        .with(systems::WinLoseChecker, "WinLoseChecker", &["Movement"])
         .with(systems::Animator, "Animator", &["Keyboard", "AI"])
         .build();
 
@@ -125,8 +126,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    // Add resources (all resources must be added before they can be updated)
+    // Add resources (resources used with ReadExpect/WriteExpect must be added before use)
     world.insert(TimeDelta::default());
+    world.insert(GameStatus::Running);
 
     // Begin game loop
     let frame_duration = Duration::from_nanos(1_000_000_000 / 60);
@@ -181,19 +183,17 @@ fn main() -> Result<(), Box<dyn Error>> {
         // Apply any lazy updates that occurred during dispatch
         world.maintain();
 
-        player.update(frame_duration, world_bounds);
-        for enemy in &mut enemies {
-            enemy.update(frame_duration, world_bounds);
-        }
-        // If the player collides with any enemies, quit the game immediately
-        if enemies.iter().any(|enemy| player.collides_with(enemy.bounding_box())) {
-            println!("You lose!");
-            break;
-        }
-        // If the player reaches the goal, they win
-        if player.collides_with(goal.bounding_box()) {
-            println!("You win!");
-            break;
+        // Check if we need to quit the game
+        match *world.read_resource() {
+            GameStatus::Running => {}, // Keep going
+            GameStatus::Win => {
+                println!("You win!");
+                break;
+            },
+            GameStatus::Lose => {
+                println!("You lose!");
+                break;
+            },
         }
 
         // RENDER
