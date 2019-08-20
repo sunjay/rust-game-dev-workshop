@@ -88,6 +88,9 @@ items you may want to resolve:
   position. It's a good idea to return the character to that neutral position
   when they stop moving. Some spritesheets will even include an idle *animation*
   that you can play after a few seconds if the character isn't moving anymore.
+* Animations are not guaranteed to advance even a single frame. That means that
+  if you tap/feather an arrow key, you can make a character float from point to
+  point without their step ever being animated.
 * Providing a duration for each frame is a fairly typical approach for
   specifying sprite animations. It has a downside though that you need to make
   sure you tune it to the walking speed. If you don't, it can appear like the
