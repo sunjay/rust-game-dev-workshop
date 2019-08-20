@@ -1,4 +1,4 @@
-# minimal-game
+# rust-game-dev-workshop
 
 This is a minimally "complete" game created in Rust. It has a
 keyboard-controlled player, some enemies/obstacles, and a goal to reach. It's
@@ -6,6 +6,10 @@ hard to define what exactly makes a game "complete", but these three things
 together do at least make something you can play.
 
 ![Minimal Rust Game](preview.gif)
+
+This game was created for use in my RustConf 2019 Game Development Workshop.
+There are two separate implementations: one without the specs ECS and one that
+uses it.
 
 ## Acknowledgements
 
