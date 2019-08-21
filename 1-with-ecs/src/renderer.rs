@@ -2,6 +2,8 @@
 //! thread. It cannot be executed in parallel like other systems. Another complication is that it
 //! returns a `Result` whereas normal systems do not return anything.
 
+#![allow(dead_code, unused_variables, unused_imports)] //TODO(EX#2): remove this line
+
 use specs::{SystemData, ReadStorage, Join, World, prelude::ResourceId};
 use sdl2::{
     rect::{Point, Rect},
@@ -21,15 +23,12 @@ impl<'a> RendererData<'a> {
     pub fn render(&self, canvas: &mut WindowCanvas, textures: &[Texture]) -> Result<(), String> {
         let RendererData {bounding_boxes, sprites} = self;
 
-        // The screen coordinate system has (0, 0) in its top-left corner whereas the
-        // world coordinate system has (0, 0) in the center of the screen.
-        let (width, height) = canvas.output_size()?;
-        let world_to_screen_offset = Point::new(width as i32 / 2, height as i32 / 2);
+        //TODO(EX#2): Copy the code from the render() function of goal.rs, player.rs, or enemy.rs
+        // and then adapt it to work in this function
         for (&BoundingBox(bounds), &Sprite {texture_id, region: sprite_rect}) in (bounding_boxes, sprites).join() {
-            let screen_pos = bounds.center() + world_to_screen_offset;
-            let screen_rect = Rect::from_center(screen_pos, sprite_rect.width(), sprite_rect.height());
-
-            canvas.copy(&textures[texture_id], sprite_rect, screen_rect)?;
+            //TODO(EX#2): Figure out how to render given the bounding box, texture_id, and
+            // sprite_rect. HINT: How do you determine the position based on the bounding box?
+            // Go to the specs documentation and look up `Rect`.
         }
 
         Ok(())
