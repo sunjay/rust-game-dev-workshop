@@ -11,6 +11,15 @@ This game was created for use in my RustConf 2019 Game Development Workshop.
 There are two separate implementations: one without the specs ECS and one that
 uses it.
 
+The `master` branch contains the exercises for the workshop and the
+[`solutions`](https://github.com/sunjay/rust-game-dev-workshop/tree/solutions)
+branch contains **one possible** solution to each exercise. That is, there may
+be multiple ways to write the code for each exercise and you should not worry
+too much about adhering to the ways I have implemented each step. The exercises
+are designed to not interfere with each other, so you can work on each one in
+sequence without any issues. Make sure all warnings and compiler errors are
+resolved before moving on through each one.
+
 ## Acknowledgements
 
 The sources of the assets used in this game are linked below:
