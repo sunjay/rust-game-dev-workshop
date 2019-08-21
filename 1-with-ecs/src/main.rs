@@ -91,6 +91,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         })
         .build();
 
+    #[allow(unused_variables)] //TODO(EX#5): Delete this line
     let player_animations = MovementAnimations::standard_walking_animations(
         bardo_texture,
         Rect::new(0, 0, 52, 72),
@@ -102,14 +103,20 @@ fn main() -> Result<(), Box<dyn Error>> {
         .with(Player {movement_speed: 200})
         .with(BoundingBox(Rect::from_center((rng.gen_range(-320, 321), 250), 32, 58)))
         .with(Velocity {speed: 0, direction: Direction::Down})
-        .with(player_animations.animation_for(Direction::Down).frames[0].sprite.clone())
-        .with(player_animations.animation_for(Direction::Down).clone())
-        .with(player_animations)
+        .with(Sprite {
+            texture_id: bardo_texture,
+            region: Rect::new(0, 0, 52, 72),
+        })
+        //TODO(EX#5): Uncomment these lines and delete the `Sprite` component added above
+        // .with(player_animations.animation_for(Direction::Down).frames[0].sprite.clone())
+        // .with(player_animations.animation_for(Direction::Down).clone())
+        // .with(player_animations)
         .build();
 
     // Generate enemies in random positions. To avoid overlap with anything else, an area of the
     // world coordinate system is divided up into a 2D grid. Each enemy gets a random position
     // within one of the cells of that grid.
+    #[allow(unused_variables)] //TODO(EX#5): Delete this line
     let enemy_animations = MovementAnimations::standard_walking_animations(
         reaper_texture,
         Rect::new(0, 0, 64, 72),
@@ -138,9 +145,14 @@ fn main() -> Result<(), Box<dyn Error>> {
                 })
                 .with(BoundingBox(Rect::from_center(enemy_pos, 50, 58)))
                 .with(Velocity {speed: 200, direction: enemy_dir})
-                .with(enemy_animations.animation_for(enemy_dir).frames[0].sprite.clone())
-                .with(enemy_animations.animation_for(enemy_dir).clone())
-                .with(enemy_animations.clone())
+                .with(Sprite {
+                    texture_id: reaper_texture,
+                    region: Rect::new(0, 0, 64, 72),
+                })
+                //TODO(EX#5): Uncomment these lines and delete the `Sprite` component added above
+                // .with(enemy_animations.animation_for(enemy_dir).frames[0].sprite.clone())
+                // .with(enemy_animations.animation_for(enemy_dir).clone())
+                // .with(enemy_animations.clone())
                 .build();
         }
     }
