@@ -1,76 +1,40 @@
-use std::time::Instant;
+#![allow(unused_imports, unused_variables)] //TODO(EX#5): remove this line
 
 use specs::{System, SystemData, Entities, ReadStorage, WriteStorage, Join, World, prelude::ResourceId};
 
-use crate::components::{Velocity, Animation, Sprite, MovementAnimations};
+//TODO(EX#5): You will need to import some things.
 
 pub struct Animator;
 
 /// Data from the world required by the system
 #[derive(SystemData)]
 pub struct AnimatorData<'a> {
+    //TODO(EX#5): You will need this in order to add or remove components from a component storage.
+    // HINT: Need to use `&*entities` - https://slide-rs.github.io/specs/08_join.html#basic-joining
     entities: Entities<'a>,
-    velocities: ReadStorage<'a, Velocity>,
-    movement_animations: ReadStorage<'a, MovementAnimations>,
-    animations: WriteStorage<'a, Animation>,
-    sprites: WriteStorage<'a, Sprite>,
+    //TODO(EX#5): Which components do you think you need to implement this system?
+    // HINT: You can always come back and add more fields here later. Try implementing the rest of
+    // the system and you'll figure out what you need naturally.
 }
 
 impl<'a> System<'a> for Animator {
     type SystemData = AnimatorData<'a>;
 
     fn run(&mut self, data: Self::SystemData) {
-        let AnimatorData {
-            entities,
-            velocities,
-            movement_animations,
-            mut animations,
-            mut sprites,
-        } = data;
+        let AnimatorData {entities} = data;
 
         // Update the Animation component of every entity with Velocity and MovementAnimations
         // This loop can be made into a separate System for increased parallelism as the game grows
-        for (entity, &Velocity {speed, direction}, move_animations) in (&*entities, &velocities, &movement_animations).join() {
-            // Clone the frames (cheaply thanks to Arc) so we can use them without keeping a
-            // reference to the animation around. This helps us mutate `animations` without keeping
-            // an immutable reference to it around.
-            let anim_frames = animations.get(entity).map(|anim| anim.frames.clone());
-            // Stop animating movement if the entity has stopped
-            if speed == 0 && anim_frames.is_some() {
-                animations.remove(entity);
-                continue;
-            }
-
-            let dir_anim = move_animations.animation_for(direction);
-
-            // Testing for equality of two Vecs would normally be quite expensive, but luckily
-            // since we are using Arc<Vec<_>>, this will check if the pointers are equal first
-            // (thus making the comparision very cheap in most cases)
-            let needs_update = match anim_frames {
-                // Only update if a different animation is currently playing
-                Some(anim_frames) => anim_frames != dir_anim.frames,
-                // No animation currently, so we can update it unconditionally
-                None => true,
-            };
-
-            if needs_update {
-                animations.insert(entity, dir_anim.clone())
-                    .expect("failed to update animation");
-            }
-        }
+        //TODO(EX#5): Implement this part of the animation engine.
+        // HINT: https://slide-rs.github.io/specs/06_system_data.html#adding-and-removing-components
+        // HINT: Don't forget that movement animations should only apply when an entity is moving.
+        // HINT: Only update the animation if it is not already playing or else your animation will
+        //  restart over and over again and never advance.
 
         // Advance each animation and update the current sprite to be rendered when necessary
-        for (anim, sprite) in (&mut animations, &mut sprites).join() {
-            // Advance the animation frame if enough time has elapsed
-            if anim.frame_timer.elapsed() >= anim.frames[anim.current_frame].duration {
-                // Loop back to the first frame if we've advanced past the end
-                anim.current_frame = (anim.current_frame + 1) % anim.frames.len();
-                // Reset the frame timer
-                anim.frame_timer = Instant::now();
-
-                // Current frame has changed, so we need to update the sprite
-                *sprite = anim.frames[anim.current_frame].sprite.clone();
-            }
-        }
+        //TODO(EX#5): Implement this part of the animation engine.
+        // HINT: Each frame has a duration and each animation has a timer. Can you use that
+        //  information to determine when to go to the next frame? What state needs to be updated
+        //  when the frame changes? Do any other components need to change?
     }
 }
