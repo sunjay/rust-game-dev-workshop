@@ -16,7 +16,7 @@ use sdl2::{
     rect::{Point, Rect},
     image::{self, LoadTexture, InitFlag},
 };
-use specs::{World, WorldExt, Builder, DispatcherBuilder};
+use specs::{World, WorldExt, Builder, DispatcherBuilder, SystemData};
 
 use crate::direction::Direction;
 use crate::resources::{TimeDelta, KeyboardEvent, GameStatus};
@@ -79,6 +79,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut world = World::new();
     // Setup the component storages based on the data used by the systems
     dispatcher.setup(&mut world);
+    RendererData::setup(&mut world);
 
     let mut rng = thread_rng();
 
