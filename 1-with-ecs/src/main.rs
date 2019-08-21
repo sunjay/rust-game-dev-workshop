@@ -4,9 +4,11 @@ mod resources;
 mod systems;
 mod renderer;
 
+//TODO(EX#3): You will need to modify the imports below.
+
 use std::thread;
 use std::error::Error;
-use std::time::{Instant, Duration};
+use std::time::Duration;
 
 use rand::{Rng, thread_rng};
 use sdl2::{
@@ -26,7 +28,6 @@ use crate::components::{
     Sprite,
     MovementAnimations,
     Player,
-    Enemy,
     Goal,
 };
 use crate::renderer::RendererData;
@@ -69,10 +70,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Declare the hierarchy of systems that will process entities and components
     let mut dispatcher = DispatcherBuilder::new()
         .with(systems::Keyboard, "Keyboard", &[])
-        .with(systems::AI, "AI", &[])
-        .with(systems::Movement {world_bounds}, "Movement", &["Keyboard", "AI"])
+        //TODO(EX#3): Add the AI system here. HINT: Look up the documentation for DispatcherBuilder
+        //TODO(EX#3): Which other systems should depend on the AI system?
+        .with(systems::Movement {world_bounds}, "Movement", &["Keyboard"])
         .with(systems::WinLoseChecker, "WinLoseChecker", &["Movement"])
-        .with(systems::Animator, "Animator", &["Keyboard", "AI"])
+        .with(systems::Animator, "Animator", &["Keyboard"])
         .build();
 
     // Game state
@@ -126,6 +128,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     for i in -1..2 {
         for j in -2..0 {
+            #![allow(unused_variables)] //TODO(EX#3): Remove this line
+
             let enemy_pos = Point::new(
                 i * 200 + rng.gen_range(-80, 80),
                 j * 140 + 200 + rng.gen_range(-40, 40),
@@ -139,16 +143,17 @@ fn main() -> Result<(), Box<dyn Error>> {
             };
 
             world.create_entity()
-                .with(Enemy {
-                    direction_timer: Instant::now(),
-                    direction_change_delay: Duration::from_millis(200),
-                })
-                .with(BoundingBox(Rect::from_center(enemy_pos, 50, 58)))
-                .with(Velocity {speed: 200, direction: enemy_dir})
+                //TODO(EX#3): Add the following components to each enemy: Enemy, BoundingBox,
+                // Velocity, and Sprite. The components already below are just enough to make
+                // Exercise #2 work. You should make sure they have valid values. Look above to see
+                // how components were added for the player and the goal. Base the values for each
+                // component on enemy.rs and the variables declared in this loop.
+                .with(BoundingBox(Rect::from_center(enemy_pos, 1, 1)))
                 .with(Sprite {
                     texture_id: reaper_texture,
                     region: Rect::new(0, 0, 64, 72),
                 })
+
                 //TODO(EX#5): Uncomment these lines and delete the `Sprite` component added above
                 // .with(enemy_animations.animation_for(enemy_dir).frames[0].sprite.clone())
                 // .with(enemy_animations.animation_for(enemy_dir).clone())
