@@ -1,41 +1,27 @@
+#![allow(unused_imports)] //TODO(EX#4): remove this line
+
 use specs::{System, SystemData, Read, ReadStorage, WriteStorage, Join, World, prelude::ResourceId};
 
-use crate::resources::KeyboardEvent;
-use crate::components::{Player, Velocity};
+//TODO(EX#4): You will need to import some things.
 
 pub struct Keyboard;
 
 /// Data from the world required by the system
 #[derive(SystemData)]
 pub struct KeyboardData<'a> {
-    players: ReadStorage<'a, Player>,
-    velocities: WriteStorage<'a, Velocity>,
-    keyboard_event: Read<'a, Option<KeyboardEvent>>,
+    //TODO(EX#4): What data do you need to implement this system?
+    // HINT: https://slide-rs.github.io/specs/06_system_data.html
+    // HINT: https://slide-rs.github.io/specs/04_resources.html
+    #[allow(dead_code)] //TODO(EX#4): This field is not needed. It is just a placeholder.
+    enemies: WriteStorage<'a, crate::components::Enemy>,
 }
 
 impl<'a> System<'a> for Keyboard {
     type SystemData = KeyboardData<'a>;
 
     fn run(&mut self, data: Self::SystemData) {
-        let KeyboardData {players, mut velocities, keyboard_event} = data;
-
-        use KeyboardEvent::*;
-        match *keyboard_event {
-            // Instruct player to move in the given direction
-            Some(MoveInDirection(direction)) => {
-                for (&Player {movement_speed}, velocity) in (&players, &mut velocities).join() {
-                    velocity.speed = movement_speed;
-                    velocity.direction = direction;
-                }
-            },
-            // Instruct player to stop (but preserve the direction)
-            Some(Stop) => {
-                for (_, velocity) in (&players, &mut velocities).join() {
-                    velocity.speed = 0;
-                }
-            },
-            // Do nothing if there is no event to process
-            None => {},
-        }
+        //TODO(EX#4): Update the player's velocity based on the keyboard event.
+        // HINT: Look at the `walk_in_direction` and `stop` methods in player.rs.
+        let KeyboardData {..} = data;
     }
 }

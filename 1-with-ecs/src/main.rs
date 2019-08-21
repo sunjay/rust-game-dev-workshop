@@ -5,6 +5,7 @@ mod systems;
 mod renderer;
 
 //TODO(EX#3): You will need to modify the imports below.
+//TODO(EX#4): You will need to modify the imports below.
 
 use std::thread;
 use std::error::Error;
@@ -21,7 +22,7 @@ use sdl2::{
 use specs::{World, WorldExt, Builder, DispatcherBuilder};
 
 use crate::direction::Direction;
-use crate::resources::{TimeDelta, KeyboardEvent, GameStatus};
+use crate::resources::{TimeDelta, GameStatus};
 use crate::components::{
     BoundingBox,
     Velocity,
@@ -93,7 +94,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         })
         .build();
 
-    #[allow(unused_variables)] //TODO(EX#5): Delete this line
+    #[allow(unused_variables)] //TODO(EX#5): remove this line
     let player_animations = MovementAnimations::standard_walking_animations(
         bardo_texture,
         Rect::new(0, 0, 52, 72),
@@ -118,7 +119,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Generate enemies in random positions. To avoid overlap with anything else, an area of the
     // world coordinate system is divided up into a 2D grid. Each enemy gets a random position
     // within one of the cells of that grid.
-    #[allow(unused_variables)] //TODO(EX#5): Delete this line
+    #[allow(unused_variables)] //TODO(EX#5): remove this line
     let enemy_animations = MovementAnimations::standard_walking_animations(
         reaper_texture,
         Rect::new(0, 0, 64, 72),
@@ -174,7 +175,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         // HANDLE EVENTS
 
         // Handle all of the events available right now
-        let mut keyboard_event = None;
+        //TODO(EX#4): Uncomment this line
+        // let mut keyboard_event = None;
         for event in event_pump.poll_iter() {
             match event {
                 // Quit the game if the window is closed or if the escape key is pressed
@@ -184,28 +186,33 @@ fn main() -> Result<(), Box<dyn Error>> {
                 },
                 // Set the player direction and speed based on the arrow key that is pressed
                 Event::KeyDown { keycode: Some(Keycode::Up), repeat: false, .. } => {
-                    keyboard_event = Some(KeyboardEvent::MoveInDirection(Direction::Up));
+                    //TODO(EX#4): Uncomment and complete the line below
+                    // keyboard_event = Some();
                 },
                 Event::KeyDown { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    keyboard_event = Some(KeyboardEvent::MoveInDirection(Direction::Down));
+                    //TODO(EX#4): Uncomment and complete the line below
+                    // keyboard_event = Some();
                 },
                 Event::KeyDown { keycode: Some(Keycode::Left), repeat: false, .. } => {
-                    keyboard_event = Some(KeyboardEvent::MoveInDirection(Direction::Left));
+                    //TODO(EX#4): Uncomment and complete the line below
+                    // keyboard_event = Some();
                 },
                 Event::KeyDown { keycode: Some(Keycode::Right), repeat: false, .. } => {
-                    keyboard_event = Some(KeyboardEvent::MoveInDirection(Direction::Right));
+                    //TODO(EX#4): Uncomment and complete the line below
+                    // keyboard_event = Some();
                 },
                 Event::KeyUp { keycode: Some(Keycode::Left), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Right), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Up), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    keyboard_event = Some(KeyboardEvent::Stop);
+                    //TODO(EX#4): Uncomment and complete the line below
+                    // keyboard_event = Some();
                 },
                 _ => {}
             }
         }
         // Inform the systems of the keyboard event
-        world.insert(keyboard_event);
+        //TODO(EX#4): Insert a resource for use by the Keyboard system
 
         // UPDATE
 
