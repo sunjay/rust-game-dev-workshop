@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+  "0-without-ecs",
+  "1-with-ecs",
+]
