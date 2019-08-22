@@ -1,4 +1,4 @@
-#![allow(dead_code, unused_variables, unused_imports, unused_mut)] //TODO(EX#3): remove this line
+//#![allow(dead_code, unused_variables, unused_imports, unused_mut)] //TODO(EX#3): remove this line
 
 use std::time::Instant;
 

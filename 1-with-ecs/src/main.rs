@@ -9,7 +9,8 @@ mod renderer;
 
 use std::thread;
 use std::error::Error;
-use std::time::Duration;
+use std::time::{Instant, Duration};
+
 
 use rand::{Rng, thread_rng};
 use sdl2::{
@@ -30,6 +31,7 @@ use crate::components::{
     MovementAnimations,
     Player,
     Goal,
+    Enemy,
 };
 use crate::renderer::RendererData;
 
@@ -72,10 +74,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut dispatcher = DispatcherBuilder::new()
         .with(systems::Keyboard, "Keyboard", &[])
         //TODO(EX#3): Add the AI system here. HINT: Look up the documentation for DispatcherBuilder
+        .with(systems::AI, "AI", &[])
         //TODO(EX#3): Which other systems should depend on the AI system?
         .with(systems::Movement {world_bounds}, "Movement", &["Keyboard"])
         .with(systems::WinLoseChecker, "WinLoseChecker", &["Movement"])
-        .with(systems::Animator, "Animator", &["Keyboard"])
+        .with(systems::Animator, "Animator", &["Keyboard", "AI"])
         .build();
 
     // Game state
@@ -150,7 +153,12 @@ fn main() -> Result<(), Box<dyn Error>> {
                 // Exercise #2 work. You should make sure they have valid values. Look above to see
                 // how components were added for the player and the goal. Base the values for each
                 // component on enemy.rs and the variables declared in this loop.
-                .with(BoundingBox(Rect::from_center(enemy_pos, 1, 1)))
+                .with(Enemy {
+                    direction_timer: Instant::now(),
+                    direction_change_delay: Duration::from_millis(200),
+                })
+                .with(BoundingBox(Rect::from_center(enemy_pos, 50, 58)))
+                .with(Velocity {speed: 200, direction: enemy_dir})
                 .with(Sprite {
                     texture_id: reaper_texture,
                     region: Rect::new(0, 0, 64, 72),
