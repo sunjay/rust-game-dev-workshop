@@ -1,5 +1,3 @@
-//#![allow(dead_code, unused_variables, unused_imports, unused_mut)] //TODO(EX#3): remove this line
-
 use std::time::Instant;
 
 use rand::{Rng, thread_rng};
@@ -23,8 +21,6 @@ impl<'a> System<'a> for AI {
     fn run(&mut self, data: Self::SystemData) {
         let AIData {mut enemies, mut velocities} = data;
 
-        //TODO(EX#3): Fill in this code based on enemy.rs.
-        // HINT: You will need to use the Join trait: https://slide-rs.github.io/specs/08_join.html
         let mut rng = thread_rng();
         for (enemy, velocity) in (&mut enemies, &mut velocities).join() {
             // Avoid changing the direction too rapidly by only doing it every so often
