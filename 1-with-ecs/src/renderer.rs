@@ -28,7 +28,7 @@ impl<'a> RendererData<'a> {
         for (&BoundingBox(bounds), &Sprite {texture_id, region: sprite_rect}) in (bounding_boxes, sprites).join() {
             //TODO(EX#2): Figure out how to render given the bounding box, texture_id, and
             // sprite_rect. HINT: How do you determine the position based on the bounding box?
-            // Go to the specs documentation and look up `Rect`.
+            // Go to the sdl2 documentation and look up `Rect`.
         }
 
         Ok(())
