@@ -1,0 +1,13 @@
+[package]
+name = "minimal-game-with-ecs"
+version = "0.1.0"
+authors = ["Sunjay Varma <varma.sunjay@gmail.com>"]
+edition = "2018"
+build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+sdl2 = { version = "0.32", features = ["image"] }
+specs = { version = "0.15", features = ["specs-derive", "shred-derive"] }
+rand = "0.7"
