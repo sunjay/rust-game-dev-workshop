@@ -97,25 +97,29 @@ fn main() -> Result<(), Box<dyn Error>> {
                 Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
                     break 'running
                 },
+
                 // Set the player direction and speed based on the arrow key that is pressed
                 Event::KeyDown { keycode: Some(Keycode::Up), repeat: false, .. } => {
                     player.walk_in_direction(Direction::Up);
                 },
+
                 Event::KeyDown { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    player.walk_in_direction(Direction::Down);
+                    //TODO(EX#N1): Fill in this line
+                    // HINT: This should be very similar to what was done in the Keycode::Up case
+                    //  above.
                 },
-                Event::KeyDown { keycode: Some(Keycode::Left), repeat: false, .. } => {
-                    player.walk_in_direction(Direction::Left);
-                },
-                Event::KeyDown { keycode: Some(Keycode::Right), repeat: false, .. } => {
-                    player.walk_in_direction(Direction::Right);
-                },
+
+                //TODO(EX#N1): Add two more cases for the left arrow and the right arrow
+
                 Event::KeyUp { keycode: Some(Keycode::Left), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Right), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Up), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    player.stop();
+                    //TODO(EX#N1): Fill in this line.
+                    // HINT: Look at the methods on the player struct. What should happen when the
+                    //  player releases the arrow key they had previously pressed down?
                 },
+
                 _ => {}
             }
         }

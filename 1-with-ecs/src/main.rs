@@ -130,7 +130,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     for i in -1..2 {
         for j in -2..0 {
-            #![allow(unused_variables)] //TODO(EX#3): Remove this line
+            #![allow(unused_variables)] //TODO(EX#N4): Remove this line
 
             let enemy_pos = Point::new(
                 i * 200 + rng.gen_range(-80, 80),
@@ -144,23 +144,11 @@ fn main() -> Result<(), Box<dyn Error>> {
                 _ => unreachable!(),
             };
 
-            world.create_entity()
-                //TODO(EX#3): Add the following components to each enemy: Enemy, BoundingBox,
-                // Velocity, and Sprite. The components already below are just enough to make
-                // Exercise #2 work. You should make sure they have valid values. Look above to see
-                // how components were added for the player and the goal. Base the values for each
-                // component on enemy.rs and the variables declared in this loop.
-                .with(BoundingBox(Rect::from_center(enemy_pos, 1, 1)))
-                .with(Sprite {
-                    texture_id: reaper_texture,
-                    region: Rect::new(0, 0, 64, 72),
-                })
-
-                //TODO(EX#5): Uncomment these lines and delete the `Sprite` component added above
-                // .with(enemy_animations.animation_for(enemy_dir).frames[0].sprite.clone())
-                // .with(enemy_animations.animation_for(enemy_dir).clone())
-                // .with(enemy_animations.clone())
-                .build();
+            //TODO(EX#N4): Create enemy entities. Of all the components in `components.rs`, which
+            // ones should an enemy have?
+            // HINT: Look at the code above for the entity and components created for the player
+            // HINT: Look at the documentation for the `sdl2` crate. Look up the `create_entity`
+            //  method in the `WorldExt` trait. Also look at the `EntityBuilder` struct docs.
         }
     }
 

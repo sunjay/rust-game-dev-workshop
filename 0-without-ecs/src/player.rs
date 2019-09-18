@@ -1,3 +1,5 @@
+#![allow(dead_code)] //TODO(EX#N1): Remove this line
+
 use std::time::{Instant, Duration};
 
 use sdl2::{
