@@ -2,10 +2,12 @@ mod direction;
 mod components;
 mod resources;
 mod systems;
+#[path = "../../1-with-ecs-solutions/src/renderer.rs"]
 mod renderer;
 
-//TODO(EX#3): You will need to modify the imports below.
-//TODO(EX#N5): You will need to modify the imports below.
+//TODO(EX#4): You may need to modify the imports below.
+//TODO(EX#5): You may need to modify the imports below.
+//TODO(EX#6): You may need to modify the imports below.
 
 use std::thread;
 use std::error::Error;
@@ -71,8 +73,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Declare the hierarchy of systems that will process entities and components
     let mut dispatcher = DispatcherBuilder::new()
         .with(systems::Keyboard, "Keyboard", &[])
-        //TODO(EX#N6): Add the AI system here. HINT: Look up the documentation for DispatcherBuilder
-        //TODO(EX#N6): Which other systems should depend on the AI system?
+        //TODO(EX#6): Add the AI system here. HINT: Look up the documentation for DispatcherBuilder
+        //TODO(EX#6): Which other systems should depend on the AI system?
         .with(systems::Movement {world_bounds}, "Movement", &["Keyboard"])
         .with(systems::WinLoseChecker, "WinLoseChecker", &["Movement"])
         .with(systems::Animator, "Animator", &["Keyboard"])
@@ -95,7 +97,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         })
         .build();
 
-    #[allow(unused_variables)] //TODO(EX#5): remove this line
     let player_animations = MovementAnimations::standard_walking_animations(
         bardo_texture,
         Rect::new(0, 0, 52, 72),
@@ -107,20 +108,15 @@ fn main() -> Result<(), Box<dyn Error>> {
         .with(Player {movement_speed: 200})
         .with(BoundingBox(Rect::from_center((rng.gen_range(-320, 321), 250), 32, 58)))
         .with(Velocity {speed: 0, direction: Direction::Down})
-        .with(Sprite {
-            texture_id: bardo_texture,
-            region: Rect::new(0, 0, 52, 72),
-        })
-        //TODO(EX#5): Uncomment these lines and delete the `Sprite` component added above
-        // .with(player_animations.animation_for(Direction::Down).frames[0].sprite.clone())
-        // .with(player_animations.animation_for(Direction::Down).clone())
-        // .with(player_animations)
+        .with(player_animations.animation_for(Direction::Down).frames[0].sprite.clone())
+        .with(player_animations.animation_for(Direction::Down).clone())
+        .with(player_animations)
         .build();
 
     // Generate enemies in random positions. To avoid overlap with anything else, an area of the
     // world coordinate system is divided up into a 2D grid. Each enemy gets a random position
     // within one of the cells of that grid.
-    #[allow(unused_variables)] //TODO(EX#5): remove this line
+    #[allow(unused_variables)] //TODO(EX#4): remove this line
     let enemy_animations = MovementAnimations::standard_walking_animations(
         reaper_texture,
         Rect::new(0, 0, 64, 72),
@@ -130,7 +126,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     for i in -1..2 {
         for j in -2..0 {
-            #![allow(unused_variables)] //TODO(EX#N4): Remove this line
+            #![allow(unused_variables)] //TODO(EX#4): Remove this line
 
             let enemy_pos = Point::new(
                 i * 200 + rng.gen_range(-80, 80),
@@ -144,7 +140,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 _ => unreachable!(),
             };
 
-            //TODO(EX#N4): Create enemy entities. Of all the components in `components.rs`, which
+            //TODO(EX#4): Create enemy entities. Of all the components in `components.rs`, which
             // ones should an enemy have?
             // HINT: Look at the code above for the entity and components created for the player
             // HINT: Look at the documentation for the `sdl2` crate. Look up the `create_entity`
@@ -164,7 +160,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         // HANDLE EVENTS
 
         // Handle all of the events available right now
-        //TODO(EX#N5): Uncomment this line
+        //TODO(EX#5): Uncomment this line
         // let mut keyboard_event = None;
         for event in event_pump.poll_iter() {
             match event {
@@ -175,33 +171,33 @@ fn main() -> Result<(), Box<dyn Error>> {
                 },
                 // Set the player direction and speed based on the arrow key that is pressed
                 Event::KeyDown { keycode: Some(Keycode::Up), repeat: false, .. } => {
-                    //TODO(EX#N5): Uncomment and complete the line below
+                    //TODO(EX#5): Uncomment and complete the line below
                     // keyboard_event = Some();
                 },
                 Event::KeyDown { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    //TODO(EX#N5): Uncomment and complete the line below
+                    //TODO(EX#5): Uncomment and complete the line below
                     // keyboard_event = Some();
                 },
                 Event::KeyDown { keycode: Some(Keycode::Left), repeat: false, .. } => {
-                    //TODO(EX#N5): Uncomment and complete the line below
+                    //TODO(EX#5): Uncomment and complete the line below
                     // keyboard_event = Some();
                 },
                 Event::KeyDown { keycode: Some(Keycode::Right), repeat: false, .. } => {
-                    //TODO(EX#N5): Uncomment and complete the line below
+                    //TODO(EX#5): Uncomment and complete the line below
                     // keyboard_event = Some();
                 },
                 Event::KeyUp { keycode: Some(Keycode::Left), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Right), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Up), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    //TODO(EX#N5): Uncomment and complete the line below
+                    //TODO(EX#5): Uncomment and complete the line below
                     // keyboard_event = Some();
                 },
                 _ => {}
             }
         }
         // Inform the systems of the keyboard event
-        //TODO(EX#N5): Insert a resource for use by the Keyboard system
+        //TODO(EX#5): Insert a resource for use by the Keyboard system
 
         // UPDATE
 

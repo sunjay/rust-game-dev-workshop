@@ -1,4 +1,4 @@
-#![allow(dead_code, unused_variables, unused_imports, unused_mut)] //TODO(EX#N6): remove this line
+#![allow(dead_code, unused_variables, unused_imports, unused_mut)] //TODO(EX#6): remove this line
 
 use std::time::Instant;
 
@@ -23,7 +23,7 @@ impl<'a> System<'a> for AI {
     fn run(&mut self, data: Self::SystemData) {
         let AIData {mut enemies, mut velocities} = data;
 
-        //TODO(EX#N6): Fill in this code based on enemy.rs.
+        //TODO(EX#6): Fill in this code based on enemy.rs.
         // HINT: You will need to use the Join trait: https://slide-rs.github.io/specs/08_join.html
     }
 }

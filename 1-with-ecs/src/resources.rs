@@ -7,7 +7,7 @@ use crate::direction::Direction;
 pub struct TimeDelta(pub Duration);
 
 #[derive(Debug)]
-#[allow(dead_code)] //TODO(EX#N5): remove this line
+#[allow(dead_code)] //TODO(EX#5): remove this line
 pub enum KeyboardEvent {
     /// Begin to move in the given direction
     MoveInDirection(Direction),

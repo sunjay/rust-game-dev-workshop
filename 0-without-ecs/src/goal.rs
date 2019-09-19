@@ -24,7 +24,7 @@ impl Goal {
         // This is different from the size of the sprite because we only want the visible region,
         // not any surrounding transparent pixels
 
-        //TODO(EX#N3): Measure the visible size of the goal sprite (using any image editor) and
+        //TODO(EX#3): Measure the visible size of the goal sprite (using any image editor) and
         // return a `Rect` centered at `self.position`
         // HINT: Search for `center` on docs.rs/sdl2. Is there a method on `Rect` that helps here?
         Rect::new(0, 0, 128, 128)
@@ -32,7 +32,7 @@ impl Goal {
 
     /// Draw the goal onto the given canvas
     pub fn render(&self, canvas: &mut WindowCanvas, textures: &[Texture]) -> Result<(), String> {
-        #![allow(unused_variables)] //TODO(EX#N3): Remove this line
+        #![allow(unused_variables)] //TODO(EX#3): Remove this line
 
         let (sprite_x, sprite_y) = (0, 0);
         let (sprite_width, sprite_height) = (128, 128);
@@ -41,7 +41,7 @@ impl Goal {
         // The screen coordinate system has (0, 0) in its top-left corner whereas the
         // world coordinate system has (0, 0) in the center of the screen.
         let (width, height) = canvas.output_size()?;
-        //TODO(EX#N3): Change the next line so that `self.position` goes from the world coordinate
+        //TODO(EX#3): Change the next line so that `self.position` goes from the world coordinate
         // system to the screen coordinate system.
         // HINT: Try a few examples on a piece of paper or in a drawing app on your phone.
         //  Use concrete numbers to help you get an idea of how to do this.
@@ -54,7 +54,7 @@ impl Goal {
         let screen_rect = Rect::from_center(screen_pos, sprite_width, sprite_height);
 
         // Copy the sprite onto the canvas
-        //TODO(EX#N3): Pass `sprite_rect` and `screen_rect` into this function in the right order.
+        //TODO(EX#3): Pass `sprite_rect` and `screen_rect` into this function in the right order.
         // HINT: Look up the documentation for `Canvas` in the `sdl2` crate and look at the
         //  coumentation for the `copy` method.
         canvas.copy(&textures[self.texture], Rect::new(0, 0, 1, 1), Rect::new(0, 0, 1, 1))?;

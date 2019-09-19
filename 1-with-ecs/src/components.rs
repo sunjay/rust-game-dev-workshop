@@ -112,8 +112,14 @@ impl MovementAnimations {
         }
     }
 
-    //TODO(EX#5): Components are just normal structs. Feel free to add any methods to any of them
-    // as needed. This is certainly not mandatory, but it may remove some code duplication.
+    pub fn animation_for(&self, direction: Direction) -> &Animation {
+        match direction {
+            Direction::Up => &self.walking_up,
+            Direction::Down => &self.walking_down,
+            Direction::Left => &self.walking_left,
+            Direction::Right => &self.walking_right,
+        }
+    }
 }
 
 /// Marks an entity as the keyboard controlled player

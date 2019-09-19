@@ -104,18 +104,18 @@ fn main() -> Result<(), Box<dyn Error>> {
                 },
 
                 Event::KeyDown { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    //TODO(EX#N1): Fill in this line
+                    //TODO(EX#1): Fill in this line
                     // HINT: This should be very similar to what was done in the Keycode::Up case
                     //  above.
                 },
 
-                //TODO(EX#N1): Add two more cases for the left arrow and the right arrow
+                //TODO(EX#1): Add two more cases for the left arrow and the right arrow
 
                 Event::KeyUp { keycode: Some(Keycode::Left), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Right), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Up), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    //TODO(EX#N1): Fill in this line.
+                    //TODO(EX#1): Fill in this line.
                     // HINT: Look at the methods on the player struct. What should happen when the
                     //  player releases the arrow key they had previously pressed down?
                 },
