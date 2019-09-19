@@ -5,7 +5,7 @@ mod systems;
 mod renderer;
 
 //TODO(EX#3): You will need to modify the imports below.
-//TODO(EX#4): You will need to modify the imports below.
+//TODO(EX#N5): You will need to modify the imports below.
 
 use std::thread;
 use std::error::Error;
@@ -71,8 +71,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Declare the hierarchy of systems that will process entities and components
     let mut dispatcher = DispatcherBuilder::new()
         .with(systems::Keyboard, "Keyboard", &[])
-        //TODO(EX#3): Add the AI system here. HINT: Look up the documentation for DispatcherBuilder
-        //TODO(EX#3): Which other systems should depend on the AI system?
+        //TODO(EX#N6): Add the AI system here. HINT: Look up the documentation for DispatcherBuilder
+        //TODO(EX#N6): Which other systems should depend on the AI system?
         .with(systems::Movement {world_bounds}, "Movement", &["Keyboard"])
         .with(systems::WinLoseChecker, "WinLoseChecker", &["Movement"])
         .with(systems::Animator, "Animator", &["Keyboard"])
@@ -164,7 +164,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         // HANDLE EVENTS
 
         // Handle all of the events available right now
-        //TODO(EX#4): Uncomment this line
+        //TODO(EX#N5): Uncomment this line
         // let mut keyboard_event = None;
         for event in event_pump.poll_iter() {
             match event {
@@ -175,33 +175,33 @@ fn main() -> Result<(), Box<dyn Error>> {
                 },
                 // Set the player direction and speed based on the arrow key that is pressed
                 Event::KeyDown { keycode: Some(Keycode::Up), repeat: false, .. } => {
-                    //TODO(EX#4): Uncomment and complete the line below
+                    //TODO(EX#N5): Uncomment and complete the line below
                     // keyboard_event = Some();
                 },
                 Event::KeyDown { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    //TODO(EX#4): Uncomment and complete the line below
+                    //TODO(EX#N5): Uncomment and complete the line below
                     // keyboard_event = Some();
                 },
                 Event::KeyDown { keycode: Some(Keycode::Left), repeat: false, .. } => {
-                    //TODO(EX#4): Uncomment and complete the line below
+                    //TODO(EX#N5): Uncomment and complete the line below
                     // keyboard_event = Some();
                 },
                 Event::KeyDown { keycode: Some(Keycode::Right), repeat: false, .. } => {
-                    //TODO(EX#4): Uncomment and complete the line below
+                    //TODO(EX#N5): Uncomment and complete the line below
                     // keyboard_event = Some();
                 },
                 Event::KeyUp { keycode: Some(Keycode::Left), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Right), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Up), repeat: false, .. } |
                 Event::KeyUp { keycode: Some(Keycode::Down), repeat: false, .. } => {
-                    //TODO(EX#4): Uncomment and complete the line below
+                    //TODO(EX#N5): Uncomment and complete the line below
                     // keyboard_event = Some();
                 },
                 _ => {}
             }
         }
         // Inform the systems of the keyboard event
-        //TODO(EX#4): Insert a resource for use by the Keyboard system
+        //TODO(EX#N5): Insert a resource for use by the Keyboard system
 
         // UPDATE
 
