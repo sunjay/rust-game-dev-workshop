@@ -143,7 +143,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             //TODO(EX#4): Create enemy entities. Of all the components in `components.rs`, which
             // ones should an enemy have?
             // HINT: Look at the code above for the entity and components created for the player
-            // HINT: Look at the documentation for the `sdl2` crate. Look up the `create_entity`
+            // HINT: Look at the documentation for the `specs` crate. Look up the `create_entity`
             //  method in the `WorldExt` trait. Also look at the `EntityBuilder` struct docs.
         }
     }
