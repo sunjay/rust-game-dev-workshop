@@ -1,8 +1,8 @@
-//TODO(BONUS#3): Remove this line or else your solution will never run!
+//TODO(BONUS#2): Remove this line or else your solution will never run!
 #[path = "../../1-with-ecs-solutions/src/systems/keyboard.rs"]
 mod keyboard;
 mod movement;
-//TODO(BONUS#4): Remove this line or else your solution will never run!
+//TODO(BONUS#3): Remove this line or else your solution will never run!
 #[path = "../../1-with-ecs-solutions/src/systems/animator.rs"]
 mod animator;
 mod ai;

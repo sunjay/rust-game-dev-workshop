@@ -2,6 +2,7 @@ mod direction;
 mod components;
 mod resources;
 mod systems;
+//TODO(BONUS#1): Remove this line or else your solution will never run!
 #[path = "../../1-with-ecs-solutions/src/renderer.rs"]
 mod renderer;
 
